@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Hookah Store — Добро пожаловать</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 94, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(230, 57, 70, 0.1) 0%, transparent 50%);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 750px;
+            background: rgba(20, 20, 20, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid #333;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255, 94, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Навигация вкладок */
+        .tabs-nav {
+            display: flex;
+            background: #141414;
+            border-bottom: 1px solid #2a2a2a;
+            padding: 8px 12px;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+        }
+
+        .tab-btn.active {
+            background: #ff5e00;
+            color: #fff;
+            border-color: #ff5e00;
+            box-shadow: 0 4px 12px rgba(255, 94, 0, 0.4);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #2a2a2a;
+            color: #ddd;
+        }
+
+        /* Контент вкладок */
+        .tab-content {
+            display: none;
+            padding: 32px 24px 40px;
+            animation: fadeContent 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeContent {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Главная страница */
+        .welcome-section {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+        }
+
+        .logo-large {
+            font-size: 3.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ff5e00, #e63946);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 6px rgba(255, 94, 0, 0.4));
+            margin-bottom: 16px;
+        }
+
+        .greeting {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .welcome-text {
+            color: #ccc;
+            font-size: 1rem;
+            max-width: 400px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .open-hours {
+            background: rgba(255, 94, 0, 0.08);
+            border: 1px solid rgba(255, 94, 0, 0.25);
+            border-radius: 20px;
+            padding: 12px 24px;
+            display: inline-block;
+            color: #ddd;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .hours-highlight {
+            color: #ff5e00;
+            font-weight: 700;
+        }
+
+        /* Блок с важным объявлением */
+        .rules-box {
+            background: rgba(230, 57, 70, 0.08);
+            border: 1px solid rgba(230, 57, 70, 0.4);
+            border-radius: 20px;
+            padding: 16px 20px;
+            max-width: 400px;
+            color: #ddd;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            text-align: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .rules-box span {
+            color: #e63946;
+            font-weight: 700;
+        }
+
+        /* Кальяны */
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .section-title span {
+            background: #ff5e00;
+            width: 6px;
+            height: 24px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .hookah-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .hookah-card {
+            background: #1c1c1c;
+            border: 1px solid #2a2a2a;
+            border-radius: 24px;
+            padding: 24px 12px;
+            text-align: center;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hookah-card.light {
+            border-top: 3px solid #ff5e00;
+        }
+        .hookah-card.medium {
+            border-top: 3px solid #e63946;
+        }
+        .hookah-card.strong {
+            border-top: 3px solid #ff2a2a;
+        }
+
+        .strength-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .light .strength-label { color: #ff5e00; }
+        .medium .strength-label { color: #e63946; }
+        .strong .strength-label { color: #ff4444; }
+
+        .hookah-icon {
+            font-size: 2.4rem;
+            margin: 12px 0 8px;
+        }
+        .hookah-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .hookah-desc {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin: 6px 0 12px;
+        }
+        .price {
+            background: rgba(255, 94, 0, 0.15);
+            border: 1px solid rgba(255, 94, 0, 0.3);
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #ff5e00;
+        }
+
+        /* Напитки */
+        .drinks-container {
+            background: #1a1a1a;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .tea-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tea-item {
+            background: #0f0f0f;
+            border-left: 4px solid;
+            padding: 14px 18px;
+            border-radius: 12px;
+            flex: 1 1 110px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .tea-item.black { border-left-color: #555; }
+        .tea-item.green { border-left-color: #7ba05b; }
+        .tea-item.red { border-left-color: #c44; }
+
+        .tea-emoji { font-size: 1.8rem; }
+
+        .tea-complect {
+            background: rgba(255, 94, 0, 0.08);
+            border: 1px solid rgba(255, 94, 0, 0.3);
+            border-radius: 14px;
+            padding: 14px;
+            margin: 14px 0;
+            color: #ddd;
+            font-size: 0.9rem;
+            text-align: center;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tea-complect span {
+            color: #ff5e00;
+            font-weight: 700;
+        }
+
+        .addon-note {
+            background: rgba(230, 57, 70, 0.08);
+            border: 1px dashed rgba(230, 57, 70, 0.5);
+            border-radius: 16px;
+            padding: 14px 18px;
+            color: #ddd;
+            font-size: 0.9rem;
+            text-align: center;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .addon-note span {
+            color: #e63946;
+            font-weight: 700;
+        }
+
+        .addon-note i {
+            font-style: normal;
+            background: #e63946;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin: 0 2px;
+        }
+
+        @media (max-width: 500px) {
+            .tab-btn {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+            .logo-large {
+                font-size: 2.4rem;
+            }
+            .greeting {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Панель вкладок -->
+        <nav class="tabs-nav">
+            <button class="tab-btn active" data-tab="home">🏠 Главная</button>
+            <button class="tab-btn" data-tab="hookah">💨 Кальяны</button>
+            <button class="tab-btn" data-tab="drinks">🍵 Напитки</button>
+        </nav>
+
+        <!-- Вкладка: Главная -->
+        <div id="tab-home" class="tab-content active">
+            <div class="welcome-section">
+                <div class="logo-large">HOOKAH STORE</div>
+                <div class="greeting">Добро пожаловать!</div>
+                <p class="welcome-text">
+                    Атмосфера уюта, качественный табак и авторские миксы. 
+                    Мы создали пространство, где хочется остаться.
+                </p>
+                <div class="open-hours">
+                    ⏰ <span class="hours-highlight">Ежедневно</span> с 14:00 до 02:00
+                </div>
+                <!-- Новый блок с правилами -->
+                <div class="rules-box">
+                    <span>🚫 Алкоголь запрещён.</span><br>
+                    ✅ Можно со своими безалкогольными напитками<br>и со своей едой.
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка: Кальяны -->
+        <div id="tab-hookah" class="tab-content">
+            <div class="section-title"><span></span> Кальяны</div>
+            <div class="hookah-grid">
+                <div class="hookah-card light">
+                    <div class="strength-label">Лёгкий</div>
+                    <div class="hookah-icon">💨</div>
+                    <div class="hookah-name">Light</div>
+                    <div class="hookah-desc">нежный дым</div>
+                    <div class="price">1500 ₽</div>
+                </div>
+                <div class="hookah-card medium">
+                    <div class="strength-label">Средний</div>
+                    <div class="hookah-icon">🔥</div>
+                    <div class="hookah-name">Medium</div>
+                    <div class="hookah-desc">сбалансирован</div>
+                    <div class="price">1500 ₽</div>
+                </div>
+                <div class="hookah-card strong">
+                    <div class="strength-label">Крепкий</div>
+                    <div class="hookah-icon">⚡</div>
+                    <div class="hookah-name">Strong</div>
+                    <div class="hookah-desc">мощный вкус</div>
+                    <div class="price">1500 ₽</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка: Напитки -->
+        <div id="tab-drinks" class="tab-content">
+            <div class="section-title"><span></span> Чай</div>
+            <div class="drinks-container">
+                <div class="tea-list">
+                    <div class="tea-item black">
+                        <span class="tea-emoji">🖤</span> Чёрный
+                    </div>
+                    <div class="tea-item green">
+                        <span class="tea-emoji">💚</span> Зелёный
+                    </div>
+                    <div class="tea-item red">
+                        <span class="tea-emoji">❤️</span> Красный
+                    </div>
+                    <!-- Травяной чай убран -->
+                </div>
+
+                <div class="tea-complect">
+                    🍵 <span>Комплект чая состоит из:</span> чайник 1,5 литра, сахар и конфеты
+                </div>
+
+                <div class="addon-note">
+                    <span>✦</span> Можно добавить ягоды, фрукты, специи <i>?</i> <span>✦</span>
+                    <br><small style="width:100%; display:block; margin-top:4px;">(уточняйте наличие у персонала)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetTab = btn.getAttribute('data-tab');
+
+                    tabs.forEach(b => b.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+
+                    btn.classList.add('active');
+                    document.getElementById(`tab-${targetTab}`).classList.add('active');
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
