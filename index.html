@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Hookah Store — Добро пожаловать</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,47 +14,61 @@
         }
 
         body {
-            background: #0a0a0a;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Manrope', sans-serif;
             color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(255, 94, 0, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(230, 57, 70, 0.1) 0%, transparent 50%);
+            position: relative;
+            overflow-x: hidden;
+            background: url('https://i.imgur.com/KfW8dfz.jpeg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            z-index: -1;
+            pointer-events: none;
         }
 
         .app-container {
             width: 100%;
             max-width: 750px;
-            background: rgba(20, 20, 20, 0.9);
-            backdrop-filter: blur(20px);
-            border: 1px solid #333;
+            background: rgba(20, 20, 20, 0.55);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255, 94, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 0 1px rgba(255, 94, 0, 0.2);
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* Навигация вкладок */
         .tabs-nav {
             display: flex;
-            background: #141414;
-            border-bottom: 1px solid #2a2a2a;
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding: 8px 12px;
             gap: 8px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
-        .tab-btn {
+        .tab-btn, .luck-nav-btn {
             background: transparent;
-            border: none;
-            color: #aaa;
+            border: 1px solid transparent;
+            color: #ddd;
             padding: 10px 20px;
             border-radius: 30px;
             font-size: 0.9rem;
@@ -61,7 +77,16 @@
             transition: 0.2s;
             white-space: nowrap;
             letter-spacing: 0.5px;
-            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1;
+            min-height: 48px;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: none;
+            animation: none;
+            font-family: 'Manrope', sans-serif;
         }
 
         .tab-btn.active {
@@ -71,28 +96,47 @@
             box-shadow: 0 4px 12px rgba(255, 94, 0, 0.4);
         }
 
-        .tab-btn:hover:not(.active) {
-            background: #2a2a2a;
-            color: #ddd;
+        .tab-btn:hover:not(.active), .luck-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
         }
 
-        /* Контент вкладок */
+        .luck-nav-btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .icon-home, .icon-large, .luck-icon {
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            flex-shrink: 0;
+        }
+
+        .icon-home { width: 24px; height: 24px; }
+        .icon-large { width: 48px; height: 48px; }
+        .luck-icon { width: 48px; height: 48px; }
+
         .tab-content {
             display: none;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
             padding: 32px 24px 40px;
-            animation: fadeContent 0.3s ease;
+            min-height: 420px;
         }
 
         .tab-content.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes fadeContent {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .tab-content.fade-out {
+            opacity: 0;
+            transform: translateY(-8px);
+            pointer-events: none;
         }
 
-        /* Главная страница */
         .welcome-section {
             text-align: center;
             display: flex;
@@ -102,69 +146,206 @@
             min-height: 50vh;
         }
 
-        .logo-large {
-            font-size: 3.2rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #ff5e00, #e63946);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 2px 6px rgba(255, 94, 0, 0.4));
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
             margin-bottom: 16px;
+        }
+
+        .logo-icon {
+            filter: drop-shadow(0 4px 12px rgba(255, 94, 0, 0.6));
+            cursor: pointer;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-icon.spinning {
+            animation: coinSpin 0.3s ease-in-out;
+        }
+
+        .logo-icon.no-click {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        @keyframes coinSpin {
+            0% { transform: rotateY(0deg) scale(1); }
+            25% { transform: rotateY(90deg) scale(1.1); }
+            50% { transform: rotateY(180deg) scale(1); }
+            75% { transform: rotateY(270deg) scale(1.1); }
+            100% { transform: rotateY(360deg) scale(1); }
+        }
+
+        .logo-icon img {
+            width: 150px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .spark {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ff5e00;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 3;
+            animation: sparkFly 0.8s ease-out forwards;
+            box-shadow: 0 0 6px #ff5e00, 0 0 12px #ff5e00, 0 0 20px #ff5e00;
+        }
+
+        @keyframes sparkFly {
+            0% { opacity: 1; transform: translate(0, 0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
         }
 
         .greeting {
             font-size: 1.8rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
             margin-bottom: 12px;
+            font-family: 'Manrope', sans-serif;
         }
 
         .welcome-text {
-            color: #ccc;
+            color: #eee;
             font-size: 1rem;
             max-width: 400px;
             line-height: 1.6;
-            margin-bottom: 24px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+            margin-bottom: 12px;
         }
 
         .open-hours {
-            background: rgba(255, 94, 0, 0.08);
-            border: 1px solid rgba(255, 94, 0, 0.25);
+            background: rgba(255, 94, 0, 0.2);
+            border: 1px solid rgba(255, 94, 0, 0.4);
             border-radius: 20px;
             padding: 12px 24px;
             display: inline-block;
-            color: #ddd;
+            color: #fff;
             font-size: 0.95rem;
             margin-bottom: 20px;
+            backdrop-filter: blur(4px);
         }
 
-        .hours-highlight {
-            color: #ff5e00;
-            font-weight: 700;
-        }
-
-        /* Блок с важным объявлением */
         .rules-box {
-            background: rgba(230, 57, 70, 0.08);
+            background: rgba(230, 57, 70, 0.2);
             border: 1px solid rgba(230, 57, 70, 0.4);
             border-radius: 20px;
             padding: 16px 20px;
             max-width: 400px;
-            color: #ddd;
+            color: #fff;
             font-size: 0.9rem;
             line-height: 1.5;
             text-align: center;
             backdrop-filter: blur(4px);
         }
 
-        .rules-box span {
-            color: #e63946;
-            font-weight: 700;
+        .share-btn {
+            background: rgba(255, 94, 0, 0.2);
+            border: 1px solid rgba(255, 94, 0, 0.5);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            margin-bottom: 20px;
+            transition: background 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Manrope', sans-serif;
         }
 
-        /* Кальяны */
+        .share-btn:active {
+            background: rgba(255, 94, 0, 0.4);
+            transform: scale(0.96);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #1e1e1e;
+            border: 2px solid #ff5e00;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-emoji {
+            font-size: 4rem;
+            margin-bottom: 12px;
+        }
+
+        .modal-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .modal-subtext {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: #ff5e00;
+            border: none;
+            color: #fff;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff5e00;
+            z-index: 101;
+            animation: confettiFall 1.5s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
         .section-title {
             font-size: 1.4rem;
             font-weight: 700;
@@ -173,6 +354,8 @@
             align-items: center;
             gap: 10px;
             color: #fff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+            font-family: 'Manrope', sans-serif;
         }
 
         .section-title span {
@@ -183,128 +366,94 @@
             display: inline-block;
         }
 
-        .hookah-grid {
+        .scale-info {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 16px;
         }
 
-        .hookah-card {
-            background: #1c1c1c;
-            border: 1px solid #2a2a2a;
+        .product-card {
+            background: rgba(30, 30, 30, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 24px;
-            padding: 24px 12px;
+            padding: 20px 12px;
             text-align: center;
-            transition: all 0.25s;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .hookah-card.light {
-            border-top: 3px solid #ff5e00;
-        }
-        .hookah-card.medium {
-            border-top: 3px solid #e63946;
-        }
-        .hookah-card.strong {
-            border-top: 3px solid #ff2a2a;
-        }
+        .product-card.light { border-top: 3px solid #ff5e00; }
+        .product-card.medium { border-top: 3px solid #e63946; }
+        .product-card.strong { border-top: 3px solid #ff2a2a; }
+        .product-card.tea { border-top: 3px solid #e6a817; }
 
-        .strength-label {
+        .product-label {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            font-family: 'Manrope', sans-serif;
         }
-        .light .strength-label { color: #ff5e00; }
-        .medium .strength-label { color: #e63946; }
-        .strong .strength-label { color: #ff4444; }
 
-        .hookah-icon {
-            font-size: 2.4rem;
-            margin: 12px 0 8px;
+        .light .product-label { color: #ff5e00; }
+        .medium .product-label { color: #e63946; }
+        .strong .product-label { color: #ff4444; }
+        .tea .product-label { color: #e6a817; }
+
+        .product-icon {
+            font-size: 2.2rem;
+            margin: 10px 0 6px;
+            filter: drop-shadow(0 2px 4px black);
         }
-        .hookah-name {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: #fff;
+
+        .product-icon i { display: block; }
+
+        .product-name { font-weight: 700; font-size: 1.2rem; color: #fff; text-shadow: 0 1px 3px black; }
+        .product-desc { font-size: 0.8rem; color: #ddd; margin: 6px 0 10px; line-height: 1.4; }
+
+        .product-complect {
+            font-size: 0.7rem;
+            color: #bbb;
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 4px 10px;
+            margin: 6px 0 10px;
         }
-        .hookah-desc {
-            font-size: 0.8rem;
-            color: #aaa;
-            margin: 6px 0 12px;
-        }
+
         .price {
-            background: rgba(255, 94, 0, 0.15);
-            border: 1px solid rgba(255, 94, 0, 0.3);
+            background: rgba(255, 94, 0, 0.25);
+            border: 1px solid rgba(255, 94, 0, 0.4);
             border-radius: 40px;
             padding: 8px 16px;
             font-weight: 700;
             font-size: 1rem;
             color: #ff5e00;
-        }
-
-        /* Напитки */
-        .drinks-container {
-            background: #1a1a1a;
-            border-radius: 24px;
-            padding: 20px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .tea-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .tea-item {
-            background: #0f0f0f;
-            border-left: 4px solid;
-            padding: 14px 18px;
-            border-radius: 12px;
-            flex: 1 1 110px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            color: #fff;
-        }
-        .tea-item.black { border-left-color: #555; }
-        .tea-item.green { border-left-color: #7ba05b; }
-        .tea-item.red { border-left-color: #c44; }
-
-        .tea-emoji { font-size: 1.8rem; }
-
-        .tea-complect {
-            background: rgba(255, 94, 0, 0.08);
-            border: 1px solid rgba(255, 94, 0, 0.3);
-            border-radius: 14px;
-            padding: 14px;
-            margin: 14px 0;
-            color: #ddd;
-            font-size: 0.9rem;
-            text-align: center;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .tea-complect span {
-            color: #ff5e00;
-            font-weight: 700;
+            backdrop-filter: blur(4px);
+            margin-top: auto;
+            font-family: 'Manrope', sans-serif;
         }
 
         .addon-note {
-            background: rgba(230, 57, 70, 0.08);
+            background: rgba(230, 57, 70, 0.2);
             border: 1px dashed rgba(230, 57, 70, 0.5);
             border-radius: 16px;
             padding: 14px 18px;
-            color: #ddd;
+            color: #fff;
             font-size: 0.9rem;
             text-align: center;
             display: flex;
@@ -312,13 +461,11 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            margin-top: 16px;
+            backdrop-filter: blur(4px);
         }
 
-        .addon-note span {
-            color: #e63946;
-            font-weight: 700;
-        }
-
+        .addon-note span { color: #e63946; font-weight: 700; }
         .addon-note i {
             font-style: normal;
             background: #e63946;
@@ -334,102 +481,132 @@
         }
 
         @media (max-width: 500px) {
-            .tab-btn {
-                padding: 8px 14px;
-                font-size: 0.8rem;
-            }
-            .logo-large {
-                font-size: 2.4rem;
-            }
-            .greeting {
-                font-size: 1.4rem;
-            }
+            .tab-btn, .luck-nav-btn { padding: 8px 14px; font-size: 0.8rem; }
+            .greeting { font-size: 1.4rem; }
+            .logo-icon img { width: 120px; }
+            .icon-home { width: 20px; height: 20px; }
+            .icon-large { width: 40px; height: 40px; }
+            .luck-icon { width: 40px; height: 40px; }
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Панель вкладок -->
         <nav class="tabs-nav">
-            <button class="tab-btn active" data-tab="home">🏠 Главная</button>
-            <button class="tab-btn" data-tab="hookah">💨 Кальяны</button>
-            <button class="tab-btn" data-tab="drinks">🍵 Напитки</button>
+            <button class="tab-btn active" data-tab="home">
+                <img src="https://i.imgur.com/9dOVOwB.png" alt="Главная" class="icon-home">
+                Главная
+            </button>
+            <button class="tab-btn" data-tab="hookah">
+                <img src="https://i.imgur.com/Oa77fba.png" alt="Кальяны" class="icon-large">
+                Кальяны
+            </button>
+            <button class="tab-btn" data-tab="drinks">
+                <img src="https://i.imgur.com/jtF0GcG.png" alt="Напитки" class="icon-large">
+                Напитки
+            </button>
+            <button class="luck-nav-btn" id="luckNavBtn">
+                <img src="https://i.imgur.com/3SmHUYW.png" alt="Удача" class="luck-icon">
+                Удача
+            </button>
         </nav>
 
-        <!-- Вкладка: Главная -->
+        <!-- Главная -->
         <div id="tab-home" class="tab-content active">
             <div class="welcome-section">
-                <div class="logo-large">HOOKAH STORE</div>
+                <div class="logo-wrapper">
+                    <div class="logo-icon" id="logoIcon">
+                        <img src="https://i.imgur.com/n80C4V0.png" alt="Логотип Hookah Store">
+                    </div>
+                </div>
                 <div class="greeting">Добро пожаловать!</div>
                 <p class="welcome-text">
-                    Атмосфера уюта, качественный табак и авторские миксы. 
-                    Мы создали пространство, где хочется остаться.
+                    Кальян, который не торопит. Чай, который не остывает.<br>
+                    Всё остальное – суета.
                 </p>
+                <button class="share-btn" id="shareButton">📤 Рассказать о нас</button>
                 <div class="open-hours">
-                    ⏰ <span class="hours-highlight">Ежедневно</span> с 14:00 до 02:00
+                    🕛 Двери открыты каждый день с 12:00 до последнего гостя (но не позже 00:00)
                 </div>
-                <!-- Новый блок с правилами -->
                 <div class="rules-box">
-                    <span>🚫 Алкоголь запрещён.</span><br>
-                    ✅ Можно со своими безалкогольными напитками<br>и со своей едой.
+                    У нас не наливают. Но вы можете принести своё:<br>
+                    безалкогольные напитки, еду, сладости. Мы только за.
                 </div>
             </div>
         </div>
 
-        <!-- Вкладка: Кальяны -->
+        <!-- Кальяны -->
         <div id="tab-hookah" class="tab-content">
             <div class="section-title"><span></span> Кальяны</div>
-            <div class="hookah-grid">
-                <div class="hookah-card light">
-                    <div class="strength-label">Лёгкий</div>
-                    <div class="hookah-icon">💨</div>
-                    <div class="hookah-name">Light</div>
-                    <div class="hookah-desc">нежный дым</div>
+            <div class="scale-info">Крепость кальяна измеряем по 10-балльной шкале</div>
+            <div class="cards-grid">
+                <div class="product-card light">
+                    <div class="product-label">Лёгкий</div>
+                    <div class="product-icon"><i class="fas fa-wind"></i></div>
+                    <div class="product-name">Light</div>
+                    <div class="product-desc">1-3 балла</div>
                     <div class="price">1500 ₽</div>
                 </div>
-                <div class="hookah-card medium">
-                    <div class="strength-label">Средний</div>
-                    <div class="hookah-icon">🔥</div>
-                    <div class="hookah-name">Medium</div>
-                    <div class="hookah-desc">сбалансирован</div>
+                <div class="product-card medium">
+                    <div class="product-label">Средний</div>
+                    <div class="product-icon"><i class="fas fa-fire"></i></div>
+                    <div class="product-name">Medium</div>
+                    <div class="product-desc">5-6 баллов</div>
                     <div class="price">1500 ₽</div>
                 </div>
-                <div class="hookah-card strong">
-                    <div class="strength-label">Крепкий</div>
-                    <div class="hookah-icon">⚡</div>
-                    <div class="hookah-name">Strong</div>
-                    <div class="hookah-desc">мощный вкус</div>
+                <div class="product-card strong">
+                    <div class="product-label">Крепкий</div>
+                    <div class="product-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="product-name">Strong</div>
+                    <div class="product-desc">7-10 баллов</div>
                     <div class="price">1500 ₽</div>
                 </div>
             </div>
         </div>
 
-        <!-- Вкладка: Напитки -->
+        <!-- Напитки -->
         <div id="tab-drinks" class="tab-content">
             <div class="section-title"><span></span> Чай</div>
-            <div class="drinks-container">
-                <div class="tea-list">
-                    <div class="tea-item black">
-                        <span class="tea-emoji">🖤</span> Чёрный
-                    </div>
-                    <div class="tea-item green">
-                        <span class="tea-emoji">💚</span> Зелёный
-                    </div>
-                    <div class="tea-item red">
-                        <span class="tea-emoji">❤️</span> Красный
-                    </div>
-                    <!-- Травяной чай убран -->
+            <div class="cards-grid">
+                <div class="product-card tea">
+                    <div class="product-label">Чёрный</div>
+                    <div class="product-icon"><i class="fas fa-mug-hot" style="color: #b0a8a0;"></i></div>
+                    <div class="product-name">Чёрный чай</div>
+                    <div class="product-desc">Факт: Чёрный чай проходит полную ферментацию (окисление) — 100%, из-за чего листья темнеют и приобретают характерный вкус.</div>
+                    <div class="product-complect">чайник 1,5 л, сахар, конфеты</div>
+                    <div class="price">500 ₽</div>
                 </div>
-
-                <div class="tea-complect">
-                    🍵 <span>Комплект чая состоит из:</span> чайник 1,5 литра, сахар и конфеты
+                <div class="product-card tea">
+                    <div class="product-label">Зелёный</div>
+                    <div class="product-icon"><i class="fas fa-mug-hot" style="color: #7ba05b;"></i></div>
+                    <div class="product-name">Зелёный чай</div>
+                    <div class="product-desc">Факт: Зелёный чай хорошо впитывает запахи, поэтому его используют для нейтрализации ароматов.</div>
+                    <div class="product-complect">чайник 1,5 л, сахар, конфеты</div>
+                    <div class="price">500 ₽</div>
                 </div>
-
-                <div class="addon-note">
-                    <span>✦</span> Можно добавить ягоды, фрукты, специи <i>?</i> <span>✦</span>
-                    <br><small style="width:100%; display:block; margin-top:4px;">(уточняйте наличие у персонала)</small>
+                <div class="product-card tea">
+                    <div class="product-label">Каркаде</div>
+                    <div class="product-icon"><i class="fas fa-mug-hot" style="color: #c44;"></i></div>
+                    <div class="product-name">Каркаде</div>
+                    <div class="product-desc">Факт: Свадебный напиток в Судане и Египте: на торжествах его подают как символ радости и изобилия.</div>
+                    <div class="product-complect">чайник 1,5 л, сахар, конфеты</div>
+                    <div class="price">500 ₽</div>
                 </div>
             </div>
+            <div class="addon-note">
+                <span>✦</span> Можно добавить ягоды, фрукты, специи <i>?</i> <span>✦</span>
+                <br><small style="width:100%; display:block; margin-top:4px;">(уточняйте наличие у персонала)</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно удачи -->
+    <div class="modal" id="luckModal">
+        <div class="modal-content">
+            <div class="modal-emoji" id="luckEmoji">🎰</div>
+            <div class="modal-text" id="luckTitle">Испытай удачу!</div>
+            <div class="modal-subtext" id="luckSubtext"></div>
+            <button class="modal-close" id="luckClose">ОК</button>
         </div>
     </div>
 
@@ -437,18 +614,198 @@
         (function() {
             const tabs = document.querySelectorAll('.tab-btn');
             const contents = document.querySelectorAll('.tab-content');
+            if (!tabs.length || !contents.length) return;
+
+            let currentActiveContent = document.querySelector('.tab-content.active');
+            let isAnimating = false;
+
+            function switchTab(targetId) {
+                if (isAnimating) return;
+                const targetContent = document.getElementById(`tab-${targetId}`);
+                if (!targetContent || targetContent === currentActiveContent) return;
+
+                isAnimating = true;
+
+                if (currentActiveContent) {
+                    currentActiveContent.classList.add('fade-out');
+                }
+
+                setTimeout(() => {
+                    if (currentActiveContent) {
+                        currentActiveContent.classList.remove('active', 'fade-out');
+                        currentActiveContent.style.display = 'none';
+                    }
+
+                    targetContent.style.display = 'block';
+                    void targetContent.offsetWidth;
+                    targetContent.classList.add('active');
+
+                    tabs.forEach(btn => btn.classList.remove('active'));
+                    const activeBtn = document.querySelector(`[data-tab="${targetId}"]`);
+                    if (activeBtn) activeBtn.classList.add('active');
+
+                    currentActiveContent = targetContent;
+
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 250);
+                }, 250);
+            }
 
             tabs.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const targetTab = btn.getAttribute('data-tab');
-
-                    tabs.forEach(b => b.classList.remove('active'));
-                    contents.forEach(c => c.classList.remove('active'));
-
-                    btn.classList.add('active');
-                    document.getElementById(`tab-${targetTab}`).classList.add('active');
+                    if (targetTab) switchTab(targetTab);
                 });
             });
+
+            const shareBtn = document.getElementById('shareButton');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', () => {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'Hookah Store — меню',
+                            text: 'Загляни в меню Hookah Store!',
+                            url: window.location.href,
+                        }).catch(() => {});
+                    } else {
+                        navigator.clipboard.writeText(window.location.href).then(() => {
+                            alert('Ссылка на меню скопирована!');
+                        }).catch(() => {
+                            prompt('Скопируйте ссылку:', window.location.href);
+                        });
+                    }
+                });
+            }
+
+            // Логотип – однократное срабатывание
+            const logoIcon = document.getElementById('logoIcon');
+            const logoWrapper = document.querySelector('.logo-wrapper');
+
+            if (logoIcon && logoWrapper) {
+                function handleLogoClick(e) {
+                    logoIcon.classList.remove('spinning');
+                    void logoIcon.offsetWidth;
+                    logoIcon.classList.add('spinning');
+
+                    const rect = logoIcon.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const clickX = e.clientX || centerX;
+                    const clickY = e.clientY || centerY;
+
+                    for (let i = 0; i < 90; i++) {
+                        const spark = document.createElement('div');
+                        spark.classList.add('spark');
+                        
+                        const angle = (Math.PI * 2 * i) / 90;
+                        const distance = 80 + Math.random() * 100;
+                        const tx = Math.cos(angle) * distance;
+                        const ty = Math.sin(angle) * distance;
+                        
+                        spark.style.setProperty('--tx', tx + 'px');
+                        spark.style.setProperty('--ty', ty + 'px');
+                        spark.style.left = (clickX - centerX + rect.width / 2) + 'px';
+                        spark.style.top = (clickY - centerY + rect.height / 2) + 'px';
+                        spark.style.width = (6 + Math.random() * 8) + 'px';
+                        spark.style.height = spark.style.width;
+                        spark.style.background = Math.random() > 0.5 ? '#ff5e00' : '#ffaa00';
+                        spark.style.animationDuration = (0.5 + Math.random() * 0.6) + 's';
+                        
+                        logoWrapper.appendChild(spark);
+                        
+                        setTimeout(() => {
+                            spark.remove();
+                        }, 800);
+                    }
+
+                    logoIcon.removeEventListener('click', handleLogoClick);
+                    logoIcon.classList.add('no-click');
+                }
+
+                logoIcon.addEventListener('click', handleLogoClick);
+            }
+
+            const luckNavBtn = document.getElementById('luckNavBtn');
+            const luckModal = document.getElementById('luckModal');
+            const luckEmoji = document.getElementById('luckEmoji');
+            const luckTitle = document.getElementById('luckTitle');
+            const luckSubtext = document.getElementById('luckSubtext');
+            const luckClose = document.getElementById('luckClose');
+
+            const LUCK_KEY = 'hookah_luck_date';
+
+            function getTodayDateString() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            function canTryLuck() {
+                const lastDate = localStorage.getItem(LUCK_KEY);
+                if (!lastDate) return true;
+
+                const today = getTodayDateString();
+                if (today > lastDate) {
+                    const now = new Date();
+                    return now.getHours() >= 12;
+                }
+                return false;
+            }
+
+            function updateLuckButton() {
+                if (canTryLuck()) {
+                    luckNavBtn.disabled = false;
+                } else {
+                    luckNavBtn.disabled = true;
+                }
+            }
+
+            function showResult(emoji, title, subtext, confetti = false) {
+                luckEmoji.textContent = emoji;
+                luckTitle.textContent = title;
+                luckSubtext.textContent = subtext;
+                luckModal.classList.add('active');
+                if (confetti) spawnConfetti();
+            }
+
+            function spawnConfetti() {
+                for (let i = 0; i < 30; i++) {
+                    const conf = document.createElement('div');
+                    conf.classList.add('confetti');
+                    conf.style.left = Math.random() * 100 + '%';
+                    conf.style.background = ['#ff5e00', '#e63946', '#ffaa00'][Math.floor(Math.random() * 3)];
+                    conf.style.animationDelay = Math.random() * 0.5 + 's';
+                    conf.style.width = (5 + Math.random() * 8) + 'px';
+                    conf.style.height = (5 + Math.random() * 8) + 'px';
+                    document.body.appendChild(conf);
+                    setTimeout(() => conf.remove(), 2000);
+                }
+            }
+
+            luckNavBtn.addEventListener('click', () => {
+                if (!canTryLuck()) return;
+
+                localStorage.setItem(LUCK_KEY, getTodayDateString());
+                updateLuckButton();
+
+                const rand = Math.random() * 100;
+                if (rand < 10) {
+                    showResult('🎉', 'Скидка 20%!', 'Покажите этот экран официанту.', true);
+                } else if (rand < 70) {
+                    showResult('🍬', 'Конфетка!', 'Заберите свой утешительный приз у стойки.', true);
+                } else {
+                    showResult('🌚', 'Сегодня звёзды не сошлись', 'Повезёт в следующий раз! Приходите завтра.');
+                }
+            });
+
+            luckClose.addEventListener('click', () => {
+                luckModal.classList.remove('active');
+            });
+
+            updateLuckButton();
         })();
     </script>
 </body>
